@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Nathan Boyer — Vidéaste & Motion Designer</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --gold: #c8a84b;
+    --gold2: #e2c97e;
+    --dark: #080808;
+    --dark2: #101010;
+    --dark3: #181818;
+    --dark4: #222222;
+    --text: #efefef;
+    --muted: #777;
+    --muted2: #444;
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--dark);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-weight: 300;
+    line-height: 1.6;
+    cursor: default;
+  }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 3px; }
+  ::-webkit-scrollbar-track { background: var(--dark); }
+  ::-webkit-scrollbar-thumb { background: var(--gold); }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 48px; height: 64px;
+    background: rgba(8,8,8,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(200,168,75,0.15);
+  }
+  .nav-logo {
+    font-family: var(--font-display);
+    font-size: 22px; letter-spacing: 4px; color: var(--gold);
+    text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 40px; }
+  .nav-links a {
+    font-size: 11px; letter-spacing: 2.5px; color: var(--muted);
+    text-decoration: none; text-transform: uppercase;
+    transition: color 0.25s;
+    position: relative; padding-bottom: 2px;
+  }
+  .nav-links a::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 100%;
+    height: 1px; background: var(--gold); transition: right 0.3s ease;
+  }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links a:hover::after { right: 0; }
+  .nav-links a.active { color: var(--text); }
+  .nav-links a.active::after { right: 0; }
+
+  /* ─── SECTIONS ─── */
+  .section { display: none; padding-top: 64px; min-height: 100vh; }
+  .section.active { display: block; }
+
+  /* ─── HERO ─── */
+  #home {
+    display: none;
+    flex-direction: column;
+  }
+  #home.active { display: flex; }
+
+  .hero {
+    min-height: calc(100vh - 64px);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; padding: 80px 48px;
+    position: relative; overflow: hidden;
+  }
+
+  .hero-noise {
+    position: absolute; inset: 0; opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+
+  .hero-ticker {
+    position: absolute; top: 20px; left: 0; right: 0;
+    font-family: var(--font-display); font-size: 11px;
+    letter-spacing: 6px; color: rgba(200,168,75,0.25);
+    white-space: nowrap; overflow: hidden;
+  }
+
+  .hero-eyebrow {
+    font-size: 11px; letter-spacing: 5px; color: var(--gold);
+    text-transform: uppercase; margin-bottom: 24px;
+    opacity: 0; animation: fadeUp 0.8s 0.2s forwards;
+  }
+
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(72px, 12vw, 140px);
+    letter-spacing: 8px; line-height: 0.9;
+    color: var(--text);
+    opacity: 0; animation: fadeUp 0.8s 0.4s forwards;
+  }
+  .hero-title span { color: var(--gold); }
+
+  .hero-divider {
+    width: 1px; height: 48px; background: linear-gradient(to bottom, var(--gold), transparent);
+    margin: 32px auto;
+    opacity: 0; animation: fadeUp 0.8s 0.6s forwards;
+  }
+
+  .hero-sub {
+    font-size: 13px; letter-spacing: 3px; color: var(--muted);
+    text-transform: uppercase; margin-bottom: 40px;
+    opacity: 0; animation: fadeUp 0.8s 0.7s forwards;
+  }
+
+  .hero-cta {
+    display: inline-block; padding: 14px 40px;
+    border: 1px solid var(--gold); color: var(--gold);
+    font-family: var(--font-body); font-size: 11px; letter-spacing: 3px;
+    text-transform: uppercase; text-decoration: none; cursor: pointer;
+    background: transparent; transition: all 0.3s;
+    opacity: 0; animation: fadeUp 0.8s 0.9s forwards;
+  }
+  .hero-cta:hover { background: var(--gold); color: var(--dark); }
+
+  /* SHOWREEL */
+  .showreel-wrap {
+    margin: 0 48px 80px;
+    border: 1px solid var(--dark4);
+    position: relative; overflow: hidden;
+    background: var(--dark2);
+  }
+  .showreel-inner {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    min-height: 380px; gap: 20px;
+    cursor: pointer; transition: background 0.3s;
+    position: relative;
+  }
+  .showreel-inner:hover { background: rgba(200,168,75,0.03); }
+  .showreel-label {
+    font-size: 10px; letter-spacing: 4px; color: var(--gold);
+    text-transform: uppercase; margin-bottom: 8px;
+  }
+  .play-circle {
+    width: 72px; height: 72px; border-radius: 50%;
+    border: 1px solid rgba(200,168,75,0.5);
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .showreel-inner:hover .play-circle { border-color: var(--gold); transform: scale(1.08); }
+  .play-triangle {
+    width: 0; height: 0;
+    border-top: 12px solid transparent;
+    border-bottom: 12px solid transparent;
+    border-left: 20px solid var(--gold);
+    margin-left: 5px;
+  }
+  .showreel-title {
+    font-family: var(--font-display);
+    font-size: 28px; letter-spacing: 6px; color: var(--text);
+  }
+  .showreel-year { font-size: 12px; color: var(--muted); letter-spacing: 2px; }
+
+  /* video embed */
+  .video-embed { display: none; width: 100%; aspect-ratio: 16/9; }
+  .video-embed video { width: 100%; height: 100%; object-fit: cover; }
+
+  /* ─── PORTFOLIO ─── */
+  #portfolio { background: var(--dark); }
+
+  .port-header {
+    padding: 64px 48px 40px;
+    display: flex; align-items: flex-end; justify-content: space-between;
+    border-bottom: 1px solid var(--dark4);
+  }
+  .port-title-wrap {}
+  .port-eyebrow { font-size: 10px; letter-spacing: 4px; color: var(--gold); margin-bottom: 8px; }
+  .port-title { font-family: var(--font-display); font-size: 52px; letter-spacing: 4px; }
+  .port-count { font-size: 11px; color: var(--muted); letter-spacing: 2px; }
+
+  .filter-bar {
+    display: flex; gap: 8px;
+    padding: 24px 48px; border-bottom: 1px solid var(--dark4);
+  }
+  .filter-btn {
+    padding: 6px 18px; border: 1px solid var(--dark4);
+    background: transparent; color: var(--muted);
+    font-family: var(--font-body); font-size: 11px; letter-spacing: 1.5px;
+    text-transform: uppercase; cursor: pointer; transition: all 0.2s;
+  }
+  .filter-btn:hover, .filter-btn.active { border-color: var(--gold); color: var(--gold); }
+
+  /* CAROUSEL */
+  .carousel-section { padding: 40px 48px 80px; }
+  .carousel-container { position: relative; overflow: hidden; }
+  .carousel-track {
+    display: flex; gap: 24px;
+    transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .video-card {
+    flex: 0 0 calc(33.333% - 16px);
+    background: var(--dark2);
+    border: 1px solid var(--dark4);
+    transition: border-color 0.3s, transform 0.3s;
+    cursor: pointer;
+    position: relative; overflow: hidden;
+  }
+  .video-card:hover { border-color: rgba(200,168,75,0.4); transform: translateY(-4px); }
+
+  .card-thumb {
+    aspect-ratio: 16/9; background: var(--dark3);
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .card-thumb video {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.7;
+  }
+  .card-thumb-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(8,8,8,0.7) 0%, transparent 60%);
+  }
+  .card-play-btn {
+    position: relative; z-index: 2;
+    width: 44px; height: 44px; border-radius: 50%;
+    border: 1px solid rgba(200,168,75,0.6);
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .video-card:hover .card-play-btn { transform: scale(1.1); border-color: var(--gold); }
+  .card-play-inner {
+    width: 0; height: 0;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-left: 14px solid var(--gold);
+    margin-left: 3px;
+  }
+  .card-tag {
+    position: absolute; top: 12px; left: 12px; z-index: 2;
+    font-size: 9px; letter-spacing: 2px; color: var(--gold);
+    border: 1px solid rgba(200,168,75,0.4); padding: 3px 8px;
+    background: rgba(8,8,8,0.7);
+    text-transform: uppercase;
+  }
+
+  .card-body { padding: 18px 20px 20px; }
+  .card-name { font-size: 15px; font-weight: 400; margin-bottom: 6px; }
+  .card-desc { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+  .carousel-controls {
+    display: flex; align-items: center; gap: 16px; margin-top: 28px;
+  }
+  .carr-btn {
+    width: 36px; height: 36px; border: 1px solid var(--dark4);
+    background: transparent; color: var(--muted); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; transition: all 0.2s;
+  }
+  .carr-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .carr-dots { display: flex; gap: 8px; }
+  .carr-dot {
+    width: 24px; height: 2px; background: var(--dark4);
+    cursor: pointer; transition: background 0.2s;
+  }
+  .carr-dot.active { background: var(--gold); }
+
+  /* ADD VIDEO */
+  .add-section { padding: 0 48px 80px; }
+  .add-title { font-size: 10px; letter-spacing: 4px; color: var(--muted); margin-bottom: 20px; }
+  .drop-zone {
+    border: 1px dashed var(--dark4);
+    padding: 40px; text-align: center;
+    cursor: pointer; transition: all 0.3s;
+    position: relative;
+  }
+  .drop-zone:hover, .drop-zone.drag-over { border-color: var(--gold); background: rgba(200,168,75,0.03); }
+  .drop-icon {
+    width: 40px; height: 40px; border: 1px solid var(--dark4);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 14px; font-size: 20px; color: var(--gold);
+  }
+  .drop-text { font-size: 13px; color: var(--muted); }
+  .drop-text span { color: var(--gold); }
+  .drop-hint { font-size: 11px; color: var(--muted2); margin-top: 6px; }
+  #file-input { display: none; }
+
+  .add-form {
+    display: none; margin-top: 24px;
+    display: none; flex-direction: column; gap: 12px;
+  }
+  .add-form.visible { display: flex; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .field-input {
+    background: var(--dark2); border: 1px solid var(--dark4);
+    color: var(--text); padding: 11px 14px;
+    font-family: var(--font-body); font-size: 13px;
+    outline: none; transition: border-color 0.2s;
+  }
+  .field-input:focus { border-color: var(--gold); }
+  .field-input::placeholder { color: var(--muted2); }
+  select.field-input option { background: var(--dark2); }
+  .add-btn {
+    align-self: flex-start; padding: 11px 28px;
+    border: 1px solid var(--gold); background: transparent;
+    color: var(--gold); font-family: var(--font-body); font-size: 11px;
+    letter-spacing: 2px; text-transform: uppercase;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .add-btn:hover { background: var(--gold); color: var(--dark); }
+
+  /* ─── À PROPOS ─── */
+  #about { background: var(--dark); }
+
+  .about-hero {
+    padding: 64px 48px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+    border-bottom: 1px solid var(--dark4);
+    min-height: calc(50vh);
+    align-items: center;
+  }
+  .about-left {}
+  .about-eyebrow { font-size: 10px; letter-spacing: 4px; color: var(--gold); margin-bottom: 24px; }
+  .about-name { font-family: var(--font-display); font-size: 64px; letter-spacing: 4px; line-height: 0.95; margin-bottom: 32px; }
+  .about-bio { font-size: 15px; color: var(--muted); line-height: 1.9; margin-bottom: 32px; }
+  .about-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tag {
+    font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--muted); border: 1px solid var(--dark4);
+    padding: 5px 12px; transition: all 0.2s;
+  }
+  .tag:hover { color: var(--gold); border-color: rgba(200,168,75,0.4); }
+
+  .about-right {}
+  .stats { display: flex; flex-direction: column; gap: 1px; }
+  .stat {
+    padding: 24px 0;
+    border-bottom: 1px solid var(--dark4);
+    display: flex; align-items: baseline; gap: 16px;
+  }
+  .stat-num {
+    font-family: var(--font-display); font-size: 48px; color: var(--gold); line-height: 1;
+  }
+  .stat-info {}
+  .stat-label { font-size: 13px; color: var(--text); }
+  .stat-detail { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  .skills-section { padding: 64px 48px; }
+  .skills-title { font-size: 10px; letter-spacing: 4px; color: var(--gold); margin-bottom: 32px; }
+  .skills-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--dark4); }
+  .skill-item {
+    background: var(--dark2); padding: 20px 24px;
+    transition: background 0.2s;
+  }
+  .skill-item:hover { background: var(--dark3); }
+  .skill-name { font-size: 13px; color: var(--text); margin-bottom: 6px; }
+  .skill-cat { font-size: 10px; color: var(--muted); letter-spacing: 1px; }
+  .skill-bar { height: 1px; background: var(--dark4); margin-top: 12px; position: relative; }
+  .skill-fill { height: 100%; background: var(--gold); }
+
+  /* ─── CONTACT ─── */
+  #contact { background: var(--dark); }
+
+  .contact-hero {
+    padding: 64px 48px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+    align-items: start; min-height: calc(100vh - 64px);
+  }
+  .contact-left {}
+  .contact-eyebrow { font-size: 10px; letter-spacing: 4px; color: var(--gold); margin-bottom: 24px; }
+  .contact-heading { font-family: var(--font-display); font-size: 52px; letter-spacing: 4px; line-height: 1.1; margin-bottom: 40px; }
+  .contact-details { display: flex; flex-direction: column; gap: 20px; }
+  .contact-row { display: flex; flex-direction: column; gap: 3px; padding-bottom: 20px; border-bottom: 1px solid var(--dark4); }
+  .contact-lbl { font-size: 10px; letter-spacing: 3px; color: var(--gold); text-transform: uppercase; }
+  .contact-val { font-size: 15px; color: var(--text); }
+  .contact-val a { color: var(--text); text-decoration: none; transition: color 0.2s; }
+  .contact-val a:hover { color: var(--gold); }
+
+  .contact-right {}
+  .form-title { font-size: 10px; letter-spacing: 4px; color: var(--muted); margin-bottom: 24px; }
+  .cform { display: flex; flex-direction: column; gap: 14px; }
+  .cform-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .cinput {
+    background: var(--dark2); border: 1px solid var(--dark4);
+    color: var(--text); padding: 13px 16px;
+    font-family: var(--font-body); font-size: 13px;
+    outline: none; transition: border-color 0.2s; width: 100%;
+  }
+  .cinput:focus { border-color: var(--gold); }
+  .cinput::placeholder { color: var(--muted2); }
+  textarea.cinput { min-height: 120px; resize: vertical; }
+  .csend {
+    padding: 13px 32px; border: 1px solid var(--gold);
+    background: transparent; color: var(--gold);
+    font-family: var(--font-body); font-size: 11px; letter-spacing: 3px;
+    text-transform: uppercase; cursor: pointer; transition: all 0.25s;
+    align-self: flex-start;
+  }
+  .csend:hover { background: var(--gold); color: var(--dark); }
+
+  .success-msg {
+    display: none; padding: 14px 18px;
+    border: 1px solid rgba(200,168,75,0.4);
+    color: var(--gold); font-size: 13px; letter-spacing: 1px;
+    background: rgba(200,168,75,0.05);
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    padding: 28px 48px;
+    border-top: 1px solid var(--dark4);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .footer-copy { font-size: 11px; color: var(--muted2); letter-spacing: 1px; }
+  .footer-logo { font-family: var(--font-display); font-size: 14px; letter-spacing: 3px; color: var(--gold); }
+
+  /* ─── MODAL ─── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.92); align-items: center; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-inner {
+    width: 80vw; max-width: 960px;
+    background: var(--dark2); border: 1px solid var(--dark4);
+    position: relative;
+  }
+  .modal-close {
+    position: absolute; top: 16px; right: 16px;
+    background: transparent; border: 1px solid var(--dark4);
+    color: var(--muted); width: 32px; height: 32px;
+    cursor: pointer; font-size: 16px; z-index: 10;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .modal-close:hover { border-color: var(--gold); color: var(--gold); }
+  .modal-video { width: 100%; aspect-ratio: 16/9; }
+  .modal-video video { width: 100%; height: 100%; }
+  .modal-info { padding: 20px 24px; }
+  .modal-tag { font-size: 10px; letter-spacing: 3px; color: var(--gold); margin-bottom: 6px; }
+  .modal-name { font-size: 18px; font-weight: 400; margin-bottom: 6px; }
+  .modal-desc { font-size: 13px; color: var(--muted); }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" onclick="showSection('home')">NB</a>
+  <div class="nav-links">
+    <a onclick="showSection('home')" class="active" id="nav-home">Accueil</a>
+    <a onclick="showSection('portfolio')" id="nav-portfolio">Portfolio</a>
+    <a onclick="showSection('about')" id="nav-about">À propos</a>
+    <a onclick="showSection('contact')" id="nav-contact">Contact</a>
+  </div>
+</nav>
+
+<!-- ═══ HOME ═══ -->
+<div id="home" class="section active">
+  <div class="hero">
+    <div class="hero-noise"></div>
+    <div class="hero-eyebrow">Vidéaste · Motion Designer · Réalisateur</div>
+    <div class="hero-title">NATHAN<br><span>BOYER</span></div>
+    <div class="hero-divider"></div>
+    <div class="hero-sub">Paris — Aubervilliers</div>
+    <button class="hero-cta" onclick="showSection('portfolio')">Voir mes réalisations</button>
+  </div>
+
+  <div class="showreel-wrap">
+    <div class="showreel-inner" id="showreel-placeholder" onclick="openShowreel()">
+      <div class="showreel-label">Showreel</div>
+      <div class="play-circle"><div class="play-triangle"></div></div>
+      <div class="showreel-title">SHOWREEL 2025</div>
+      <div class="showreel-year">Cliquez pour ajouter votre showreel</div>
+    </div>
+    <div class="video-embed" id="showreel-video">
+      <video controls id="showreel-vid"></video>
+    </div>
+  </div>
+  <input type="file" id="showreel-input" accept="video/*" style="display:none" onchange="loadShowreel(event)" />
+
+  <footer>
+    <div class="footer-copy">© 2025 Nathan Boyer</div>
+    <div class="footer-logo">NATHAN BOYER</div>
+  </footer>
+</div>
+
+<!-- ═══ PORTFOLIO ═══ -->
+<div id="portfolio" class="section">
+  <div class="port-header">
+    <div class="port-title-wrap">
+      <div class="port-eyebrow">Mes travaux</div>
+      <div class="port-title">RÉALISATIONS</div>
+    </div>
+    <div class="port-count" id="port-count">0 projets</div>
+  </div>
+
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="filterCards('tous', this)">Tous</button>
+    <button class="filter-btn" onclick="filterCards('Motion Design', this)">Motion Design</button>
+    <button class="filter-btn" onclick="filterCards('Spot Pub', this)">Spot Pub</button>
+    <button class="filter-btn" onclick="filterCards('3D / VFX', this)">3D / VFX</button>
+    <button class="filter-btn" onclick="filterCards('Évènement', this)">Évènement</button>
+    <button class="filter-btn" onclick="filterCards('Court métrage', this)">Court métrage</button>
+  </div>
+
+  <div class="carousel-section">
+    <div class="carousel-container">
+      <div class="carousel-track" id="carousel-track"></div>
+    </div>
+    <div class="carousel-controls" id="carousel-controls" style="display:none">
+      <button class="carr-btn" onclick="slideCarousel(-1)">&#8592;</button>
+      <div class="carr-dots" id="carr-dots"></div>
+      <button class="carr-btn" onclick="slideCarousel(1)">&#8594;</button>
+    </div>
+    <div id="empty-state" style="padding:60px 0; text-align:center; color:var(--muted); font-size:13px; letter-spacing:2px;">
+      AUCUNE RÉALISATION — AJOUTEZ VOTRE PREMIER PROJET CI-DESSOUS
+    </div>
+  </div>
+
+  <div class="add-section">
+    <div class="add-title">AJOUTER UNE RÉALISATION</div>
+    <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()"
+      ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropFile(event)">
+      <div class="drop-icon">+</div>
+      <div class="drop-text"><span>Cliquez pour choisir</span> ou glissez votre vidéo ici</div>
+      <div class="drop-hint">MP4, MOV, WebM — max recommandé 500 Mo</div>
+    </div>
+    <input type="file" id="file-input" accept="video/*" onchange="handleFile(event)" />
+
+    <div class="add-form" id="add-form">
+      <div class="form-row">
+        <input class="field-input" type="text" id="vid-title" placeholder="Titre du projet" />
+        <select class="field-input" id="vid-cat">
+          <option value="Motion Design">Motion Design</option>
+          <option value="Spot Pub">Spot Pub</option>
+          <option value="3D / VFX">3D / VFX</option>
+          <option value="Évènement">Évènement</option>
+          <option value="Court métrage">Court métrage</option>
+        </select>
+      </div>
+      <input class="field-input" type="text" id="vid-desc" placeholder="Description courte du projet" />
+      <button class="add-btn" onclick="addVideo()">Ajouter au portfolio</button>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-copy">© 2025 Nathan Boyer</div>
+    <div class="footer-logo">NATHAN BOYER</div>
+  </footer>
+</div>
+
+<!-- ═══ À PROPOS ═══ -->
+<div id="about" class="section">
+  <div class="about-hero">
+    <div class="about-left">
+      <div class="about-eyebrow">À propos</div>
+      <div class="about-name">NATHAN<br>BOYER</div>
+      <p class="about-bio">
+        23 ans, basé à Paris. Vidéaste et Motion Designer diplômé de 4 formations spécialisées,
+        je maîtrise l'intégralité de la chaîne de production vidéo — du tournage à l'étalonnage.
+        Passionné par l'image sous toutes ses formes, je mets mon regard créatif au service
+        de projets ambitieux, qu'il s'agisse de spots publicitaires, d'animations ou de captations événementielles.
+      </p>
+      <div class="about-tags">
+        <span class="tag">Réalisation</span>
+        <span class="tag">Montage</span>
+        <span class="tag">Motion Design</span>
+        <span class="tag">Étalonnage</span>
+        <span class="tag">3D</span>
+        <span class="tag">Direction artistique</span>
+        <span class="tag">Captation événement</span>
+      </div>
+    </div>
+    <div class="about-right">
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-num">4+</div>
+          <div class="stat-info">
+            <div class="stat-label">Années d'expérience</div>
+            <div class="stat-detail">En alternance et freelance</div>
+          </div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">4</div>
+          <div class="stat-info">
+            <div class="stat-label">Diplômes obtenus</div>
+            <div class="stat-detail">BAC, Bachelor, Master, BTS</div>
+          </div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">3</div>
+          <div class="stat-info">
+            <div class="stat-label">Alternances en entreprise</div>
+            <div class="stat-detail">Ministères, lab créatif, startup</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="skills-section">
+    <div class="skills-title">COMPÉTENCES TECHNIQUES</div>
+    <div class="skills-grid">
+      <div class="skill-item"><div class="skill-name">After Effects</div><div class="skill-cat">Motion Design</div><div class="skill-bar"><div class="skill-fill" style="width:95%"></div></div></div>
+      <div class="skill-item"><div class="skill-name">Premiere Pro</div><div class="skill-cat">Montage</div><div class="skill-bar"><div class="skill-fill" style="width:95%"></div></div></div>
+      <div class="skill-item"><div class="skill-name">DaVinci Resolve</div><div class="skill-cat">Montage / Étalonnage</div><div class="skill-bar"><div class="skill-fill" style="width:88%"></div></div></div>
+      <div class="skill-item"><div class="skill-name">Blender 3D</div><div class="skill-cat">Modélisation 3D</div><div class="skill-bar"><div class="skill-fill" style="width:80%"></div></div></div>
+      <div class="skill-item"><div class="skill-name">Cinema 4D</div><div class="skill-cat">Animation 3D</div><div class="skill-bar"><div class="skill-fill" style="width:75%"></div></div></div>
+      <div class="skill-item"><div class="skill-name">Photoshop</div><div class="skill-cat">Retouche</div><div class="skill-bar"><div class="skill-fill" style="width:85%"></div></div></div>
+      <div class="skill-item"><div class="skill-name">Illustrator</div><div class="skill-cat">Graphisme</div><div class="skill-bar"><div class="skill-fill" style="width:78%"></div></div></div>
+      <div class="skill-item"><div class="skill-name">Figma</div><div class="skill-cat">UI / Maquettes</div><div class="skill-bar"><div class="skill-fill" style="width:70%"></div></div></div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-copy">© 2025 Nathan Boyer</div>
+    <div class="footer-logo">NATHAN BOYER</div>
+  </footer>
+</div>
+
+<!-- ═══ CONTACT ═══ -->
+<div id="contact" class="section">
+  <div class="contact-hero">
+    <div class="contact-left">
+      <div class="contact-eyebrow">Contact</div>
+      <div class="contact-heading">UN PROJET ?<br>PARLONS-EN.</div>
+      <div class="contact-details">
+        <div class="contact-row">
+          <div class="contact-lbl">Email</div>
+          <div class="contact-val"><a href="mailto:boyer.nathan2002@gmail.com">boyer.nathan2002@gmail.com</a></div>
+        </div>
+        <div class="contact-row">
+          <div class="contact-lbl">Téléphone</div>
+          <div class="contact-val"><a href="tel:+33768470106">07 68 47 01 06</a></div>
+        </div>
+        <div class="contact-row">
+          <div class="contact-lbl">Localisation</div>
+          <div class="contact-val">Paris / Aubervilliers</div>
+        </div>
+        <div class="contact-row">
+          <div class="contact-lbl">Disponibilité</div>
+          <div class="contact-val">CDI · CDD · Freelance</div>
+        </div>
+      </div>
+    </div>
+    <div class="contact-right">
+      <div class="form-title">ENVOYER UN MESSAGE</div>
+      <div class="cform">
+        <div class="cform-2col">
+          <input class="cinput" type="text" id="c-name" placeholder="Votre nom" />
+          <input class="cinput" type="email" id="c-email" placeholder="Votre email" />
+        </div>
+        <input class="cinput" type="text" id="c-subject" placeholder="Sujet" />
+        <textarea class="cinput" id="c-msg" placeholder="Votre message..."></textarea>
+        <button class="csend" onclick="sendMessage()">Envoyer</button>
+        <div class="success-msg" id="success-msg">Message envoyé — je vous réponds rapidement.</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-copy">© 2025 Nathan Boyer</div>
+    <div class="footer-logo">NATHAN BOYER</div>
+  </footer>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal-inner">
+    <button class="modal-close" onclick="closeModalBtn()">✕</button>
+    <div class="modal-video"><video id="modal-vid" controls></video></div>
+    <div class="modal-info">
+      <div class="modal-tag" id="modal-tag"></div>
+      <div class="modal-name" id="modal-name"></div>
+      <div class="modal-desc" id="modal-desc"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── NAVIGATION ──
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const navEl = document.getElementById('nav-' + id);
+  if (navEl) navEl.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ── VIDEO DATA ──
+let videos = [
+  {
+    title: 'ELEPHANTS',
+    cat: 'Court métrage',
+    desc: 'Captation immersive au cœur de la savane sud-africaine — les éléphants dans leur environnement naturel, sur une bande sonore Twin Peaks.',
+    url: 'https://drive.google.com/uc?export=download&id=1A3c-MpQuK2zfVp-ip3_TWc7KhbBIZXRs'
+  }
+];
+let currentSlide = 0;
+let currentFilter = 'tous';
+let pendingFile = null;
+
+function getFiltered() {
+  if (currentFilter === 'tous') return videos;
+  return videos.filter(v => v.cat === currentFilter);
+}
+
+// ── RENDER CAROUSEL ──
+function renderCarousel() {
+  const filtered = getFiltered();
+  const track = document.getElementById('carousel-track');
+  const empty = document.getElementById('empty-state');
+  const controls = document.getElementById('carousel-controls');
+  const countEl = document.getElementById('port-count');
+
+  countEl.textContent = videos.length + ' projet' + (videos.length > 1 ? 's' : '');
+
+  if (filtered.length === 0) {
+    track.innerHTML = '';
+    empty.style.display = 'block';
+    controls.style.display = 'none';
+    return;
+  }
+
+  empty.style.display = 'none';
+
+  track.innerHTML = filtered.map((v, i) => `
+    <div class="video-card" onclick="openModal(${videos.indexOf(v)})">
+      <div class="card-thumb">
+        <video src="${v.url}" muted preload="metadata" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.6"></video>
+        <div class="card-thumb-overlay"></div>
+        <div class="card-play-btn"><div class="card-play-inner"></div></div>
+        <div class="card-tag">${v.cat}</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">${v.title}</div>
+        <div class="card-desc">${v.desc}</div>
+      </div>
+    </div>
+  `).join('');
+
+  const pages = Math.ceil(filtered.length / 3);
+  if (pages > 1) {
+    controls.style.display = 'flex';
+    const dots = document.getElementById('carr-dots');
+    dots.innerHTML = Array.from({length: pages}, (_, i) =>
+      `<div class="carr-dot ${i===0?'active':''}" onclick="goToPage(${i})"></div>`
+    ).join('');
+    currentSlide = 0;
+    updateCarousel();
+  } else {
+    controls.style.display = 'none';
+  }
+}
+
+function updateCarousel() {
+  const track = document.getElementById('carousel-track');
+  const cardW = track.children[0] ? track.children[0].offsetWidth + 24 : 0;
+  track.style.transform = `translateX(-${currentSlide * 3 * cardW}px)`;
+  document.querySelectorAll('.carr-dot').forEach((d, i) => d.classList.toggle('active', i === currentSlide));
+}
+
+function slideCarousel(dir) {
+  const filtered = getFiltered();
+  const pages = Math.ceil(filtered.length / 3);
+  currentSlide = Math.max(0, Math.min(pages - 1, currentSlide + dir));
+  updateCarousel();
+}
+
+function goToPage(i) { currentSlide = i; updateCarousel(); }
+
+// ── FILTER ──
+function filterCards(cat, btn) {
+  currentFilter = cat;
+  currentSlide = 0;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCarousel();
+}
+
+// ── ADD VIDEO ──
+function dragOver(e) { e.preventDefault(); document.getElementById('drop-zone').classList.add('drag-over'); }
+function dragLeave() { document.getElementById('drop-zone').classList.remove('drag-over'); }
+function dropFile(e) {
+  e.preventDefault();
+  dragLeave();
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('video/')) prepareAdd(file);
+}
+function handleFile(e) { const f = e.target.files[0]; if (f) prepareAdd(f); }
+
+function prepareAdd(file) {
+  pendingFile = file;
+  const form = document.getElementById('add-form');
+  form.classList.add('visible');
+  const titleInput = document.getElementById('vid-title');
+  titleInput.value = file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
+  titleInput.focus();
+}
+
+function addVideo() {
+  if (!pendingFile) return;
+  const title = document.getElementById('vid-title').value.trim() || pendingFile.name;
+  const cat = document.getElementById('vid-cat').value;
+  const desc = document.getElementById('vid-desc').value.trim() || '';
+  const url = URL.createObjectURL(pendingFile);
+  videos.push({ title, cat, desc, url, file: pendingFile });
+  pendingFile = null;
+  document.getElementById('add-form').classList.remove('visible');
+  document.getElementById('vid-title').value = '';
+  document.getElementById('vid-desc').value = '';
+  document.getElementById('file-input').value = '';
+  renderCarousel();
+}
+
+// ── MODAL ──
+function openModal(i) {
+  const v = videos[i];
+  document.getElementById('modal-vid').src = v.url;
+  document.getElementById('modal-tag').textContent = v.cat;
+  document.getElementById('modal-name').textContent = v.title;
+  document.getElementById('modal-desc').textContent = v.desc;
+  document.getElementById('modal').classList.add('open');
+  document.getElementById('modal-vid').play();
+}
+function closeModal(e) { if (e.target === document.getElementById('modal')) closeModalBtn(); }
+function closeModalBtn() {
+  document.getElementById('modal').classList.remove('open');
+  const v = document.getElementById('modal-vid');
+  v.pause(); v.src = '';
+}
+
+// ── SHOWREEL ──
+function openShowreel() { document.getElementById('showreel-input').click(); }
+function loadShowreel(e) {
+  const f = e.target.files[0];
+  if (!f) return;
+  const url = URL.createObjectURL(f);
+  document.getElementById('showreel-vid').src = url;
+  document.getElementById('showreel-placeholder').style.display = 'none';
+  const embed = document.getElementById('showreel-video');
+  embed.style.display = 'block';
+}
+
+// ── CONTACT FORM ──
+function sendMessage() {
+  const name = document.getElementById('c-name').value.trim();
+  const email = document.getElementById('c-email').value.trim();
+  const msg = document.getElementById('c-msg').value.trim();
+  if (!name || !email || !msg) return;
+  const mailto = `mailto:boyer.nathan2002@gmail.com?subject=${encodeURIComponent(document.getElementById('c-subject').value || 'Contact portfolio')}&body=${encodeURIComponent('De: ' + name + '\n' + msg)}`;
+  window.location.href = mailto;
+  document.getElementById('success-msg').style.display = 'block';
+}
+</script>
+</body>
+</html>
